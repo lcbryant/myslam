@@ -1,0 +1,18 @@
+# 这是一个参数文件
+# 目前使用的是数据集中的参数
+
+
+detector=ORB
+descriptor=ORB
+good_match_threshold=10
+
+# camera
+camera.fx=199.47583870423218855;
+camera.fy=199.47583870423218855;
+camera.cx=291.44092559814453125;
+camera.cy=208.94943237304687500;
+camera.baseline=0.080115296472;
+camera.inx=640;
+camera.iny=400;
+camera.outx=640;
+camera.outy=400;

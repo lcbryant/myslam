@@ -1,0 +1,1 @@
+g++ -fPIC -std=c++11  -g   -shared -Wl,-soname,libslam_shared.so -o libslam_shared.so CMakeFiles/slam_shared.dir/slamBase.cpp.o 
