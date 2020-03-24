@@ -7,7 +7,7 @@
  ************************************************************************/
 #pragma once
 
-// 各种头文件 
+// 各种头文件
 // C++标准库
 #include <fstream>
 #include <vector>
@@ -39,16 +39,16 @@ typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloud;
 
 // 相机内参结构
-struct CAMERA_INTRINSIC_PARAMETERS 
-{ 
+struct CAMERA_INTRINSIC_PARAMETERS
+{
     double cx, cy, fx, fy, scale;
 };
 
 // 帧结构
 struct FRAME
 {
-    cv::Mat rgb, depth; //该帧对应的彩色图与深度图
-    cv::Mat desp;       //特征描述子
+    cv::Mat rgb, depth;      //该帧对应的彩色图与深度图
+    cv::Mat desp;            //特征描述子
     vector<cv::KeyPoint> kp; //关键点
 };
 
@@ -62,39 +62,38 @@ struct RESULT_OF_PNP
 //双目相机参数
 struct STEREO_CAMERA_PARAMETERS
 {
-    double fx,fy,cx,cy,baseline,inx,iny,outx,outy;
+    double fx, fy, cx, cy, baseline, inx, iny, outx, outy;
 };
 
 // 函数接口
 // image2PonitCloud 将rgb图转换为点云
-PointCloud::Ptr image2PointCloud( cv::Mat& rgb, cv::Mat& depth, CAMERA_INTRINSIC_PARAMETERS& camera );
+PointCloud::Ptr image2PointCloud(cv::Mat &rgb, cv::Mat &depth, CAMERA_INTRINSIC_PARAMETERS &camera);
 
 // point2dTo3d 将单个点从图像坐标转换为空间坐标
 // input: 3维点Point3f (u,v,d)
-cv::Point3f point2dTo3d( cv::Point3f& point, CAMERA_INTRINSIC_PARAMETERS& camera );
-
+cv::Point3f point2dTo3d(cv::Point3f &point, CAMERA_INTRINSIC_PARAMETERS &camera);
 
 // estimateMotion 计算两个帧之间的运动
 // 输入：帧1和帧2, 相机内参
-RESULT_OF_PNP estimateMotion( FRAME& frame1, FRAME& frame2, CAMERA_INTRINSIC_PARAMETERS& camera );
+RESULT_OF_PNP estimateMotion(FRAME &frame1, FRAME &frame2, CAMERA_INTRINSIC_PARAMETERS &camera);
 
 // 参数读取类
 class ParameterReader
 {
 public:
-    ParameterReader( string filename="./parameters.txt" )
+    ParameterReader(string filename = "./parameters.txt")
     {
-        cout<<filename<<endl;
-        ifstream fin( filename.c_str() );
+        cout << filename << endl;
+        ifstream fin(filename.c_str());
         if (!fin)
         {
-            cerr<<"parameter file does not exist."<<endl;
+            cerr << "parameter file does not exist." << endl;
             return;
         }
-        while(!fin.eof())
+        while (!fin.eof())
         {
             string str;
-            getline( fin, str );
+            getline(fin, str);
             if (str[0] == '#')
             {
                 // 以‘＃’开头的是注释
@@ -104,54 +103,56 @@ public:
             int pos = str.find("=");
             if (pos == -1)
                 continue;
-            string key = str.substr( 0, pos );
-            string value = str.substr( pos+1, str.length() );
+            string key = str.substr(0, pos);
+            string value = str.substr(pos + 1, str.length());
             data[key] = value;
 
-            if ( !fin.good() )
+            if (!fin.good())
                 break;
         }
     }
-    string getData( string key )
+    string getData(string key)
     {
         map<string, string>::iterator iter = data.find(key);
         if (iter == data.end())
         {
-            cerr<<"Parameter name "<<key<<" not found!"<<endl;
+            cerr << "Parameter name " << key << " not found!" << endl;
             return string("NOT_FOUND");
         }
         return iter->second;
     }
+
 public:
     map<string, string> data;
 };
 
-class XCTool{
+class XCTool
+{
 public:
-
 };
 
-class XCKey{
+class XCKey
+{
 public:
     string frameID;
-    double tx,ty,tz;
-    double qx,qy,qz,qw;
-
+    double tx, ty, tz;
+    double qx, qy, qz, qw;
 };
 
-class XCAssociationKey {
+class XCAssociationKey
+{
 public:
-	string rgb, full_rgb, d, full_d;
+    string rgb, full_rgb, d, full_d;
 };
 
-class XCKITTIKey {
+class XCKITTIKey
+{
 public:
-	double r00, r01, r02, r10, r11, r12, r20, r21, r22;
-	double tx, ty, tz;
+    double r00, r01, r02, r10, r11, r12, r20, r21, r22;
+    double tx, ty, tz;
 };
- 
-string FindDFileByRGB(vector<XCAssociationKey>& aKeyVec, string rgb);
+
+string FindDFileByRGB(vector<XCAssociationKey> &aKeyVec, string rgb);
 
 //点云初始化
-PointCloud::Ptr image2PointCloudInverse(cv::Mat& rgb, string depthPath, CAMERA_INTRINSIC_PARAMETERS& camera);
-
+PointCloud::Ptr image2PointCloudInverse(cv::Mat &rgb, string depthPath, CAMERA_INTRINSIC_PARAMETERS &camera);
